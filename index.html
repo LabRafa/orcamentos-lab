@@ -39,6 +39,7 @@ h2{margin:28px 0 10px;font-size:15px;font-weight:700;color:var(--verde)}
 .marca{font-size:12.5px;min-height:18px;transition:opacity .25s}
 .preco{margin-top:10px;font-size:clamp(26px,4.4vw,32px);font-weight:800;color:var(--verde);font-variant-numeric:tabular-nums}
 .por{font-size:12px;color:var(--suave)}
+.preco .cent{font-size:.5em;font-weight:700;opacity:.55;margin-left:1px}
 .det{margin-top:8px;padding-top:8px;border-top:1px solid var(--linha);font-size:11.5px;color:var(--suave)}
 .nota{margin:10px 0 0;font-size:12.5px;color:var(--suave);text-align:center}
 .como{margin-top:24px;padding:16px 18px;border-radius:12px;background:var(--creme);font-size:13px}
@@ -74,12 +75,12 @@ footer em{color:var(--verde);max-width:380px}footer address{font-style:normal;co
 </main>
 <script>
 const TRANCADA=0;
-const brl=v=>"R$ "+v.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
+const brl=v=>{const s=v.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}).split(",");return '<span class="int">'+s[0]+'</span><span class="cent">,'+s[1]+'</span>'};
 const reduz=matchMedia("(prefers-reduced-motion: reduce)").matches;
-function conta(el,ate,de){if(reduz){el.textContent=brl(ate);return}const t0=performance.now(),dur=900;de=de??0;
- function f(t){const q=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-q,3);el.textContent=brl(de+(ate-de)*e);if(q<1)requestAnimationFrame(f);else el.textContent=brl(ate)}requestAnimationFrame(f)}
+function conta(el,ate,de){if(reduz){el.innerHTML=brl(ate);return}const t0=performance.now(),dur=900;de=de??0;
+ function f(t){const q=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-q,3);el.innerHTML=brl(de+(ate-de)*e);if(q<1)requestAnimationFrame(f);else el.innerHTML=brl(ate)}requestAnimationFrame(f)}
 function iniciar(){
- const valor=p=>p.dataset.simples?+p.dataset[(p.closest(".cards").dataset.dente)||"simples"]:+p.textContent.replace(/[^0-9,]/g,"").replace(",",".");
+ const valor=p=>p.dataset.simples?+p.dataset[(p.closest(".cards").dataset.dente)||"simples"]:+p.dataset.v;
  document.querySelectorAll(".preco").forEach(p=>{p.dataset.final=valor(p)});
  const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const el=e.target;el.classList.add("on");io.unobserve(el);
   el.querySelectorAll&&el.querySelectorAll(".preco").forEach(p=>conta(p,+p.dataset.final))}),{threshold:.12});
